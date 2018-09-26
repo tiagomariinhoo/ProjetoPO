@@ -36,6 +36,8 @@ set<string> vis;
 map<string, int> dis;
 
 void addNode(){
+
+  system("CLS");
   if(vis.size() == 0){
     string a, b;
     double dist;
@@ -48,6 +50,15 @@ void addNode(){
     cout << "Distancia: " << endl;
     cin >> dist;
 
+
+    if(cin.fail()){
+      cout << "Tente novamente!" << endl;
+      cin.clear();
+      cin.ignore(INT_MAX, '\n');
+      system("CLS");
+      return ;
+    }
+
     adjList[a].pb({dist, b});
     adjList[b].pb({dist, a});
     vis.insert(a), vis.insert(b);
@@ -58,56 +69,9 @@ void addNode(){
     vector<string> aux;
     for(auto i : vis) cout << i << endl, aux.pb(i);
 
-    cout << "1 - Para adicionar a um node existente" << endl;
-    cout << "2 - Para adicionar dois nodes novos" << endl;
-    int op;
-    cin >> op;
-    if(op == 1){  
-      cout << "Escolha o node: " << endl;
-      for(int i=0;i<sz(aux);i++) cout << i << " - " << aux[i] << endl;
+    cout << "Adicione um caminho entre dois nodes!" << endl;
 
-      int op2;
-      cin >> op2;
-      if(op2 < 0 or op2 >= sz(aux)){
-        cout << "Tente novamente!" << endl;
-        return ;
-      }
-
-      cout << "Digite o nome e a distancia para juntar ao Node " << aux[op] << endl;
-      string a;
-      cout << "Nome: ";
-      cin >> a;
-      cout << endl;
-      cout << "Distancia: ";
-      cout << endl;
-      double dist;
-      cin >> dist;
-
-      bool at = false;
-      for(auto i : adjList[aux[op]]){
-        if(i.S == a){
-          i.F = dist;
-          at = true;
-
-          for(auto j : adjList[a]){
-            if(j.S == aux[op]){
-              j.F = dist;
-              break;
-            }
-          }
-
-          break;
-        }
-      }
-
-      if(!at){
-      adjList[aux[op]].pb({dist, a});
-      adjList[a].pb({dist, aux[op]});
-      }
-
-      vis.insert(a);
-      cout << "Aresta adicionada com sucesso!" << endl;
-    } else if(op == 2){
+  cout << " --- " << endl;
       string a, b;
       double dist;
       cout << "Digite o nome dos nodes!" << endl;
@@ -120,17 +84,27 @@ void addNode(){
       cout << "Dist: ";
       cout << endl;
       cin >> dist;
+
+      if(cin.fail()){
+      cout << "Tente novamente!" << endl;
+      cin.clear();
+      cin.ignore(INT_MAX, '\n');
+      system("CLS");
+      return ;
+      // continue;
+    }
       
       vis.insert(a), vis.insert(b);
       bool at = false;
-      for(auto i : adjList[a]){
-        if(i.S == b){
-          at = true;
-          i.F = dist;
+      for(int i=0;i<sz(adjList[a]);i++){
 
-          for(auto j : adjList[b]){
-            if(j.S == a){
-              j.F = dist;
+        if(adjList[a][i].S == b){
+          at = true;
+          adjList[a][i].F = dist;
+
+          for(int j=0;j<sz(adjList[b]);j++){
+            if(adjList[b][j].S == a){
+              adjList[b][j].F = dist;
               break;
             }
           }
@@ -143,12 +117,11 @@ void addNode(){
         adjList[b].pb({dist, a});
       }
 
+      system("CLS");
+      if(!at)
       cout << "Aresta adicionada com sucesso!" << endl;
-    } else{
-      cout << "Selecione uma opcao valida!" << endl;
-      return ;
-    }
-
+      else cout << "Aresta atualizada com sucesso!" << endl;
+      cout << " ---- " << endl << endl;
   }
 
 }
@@ -158,13 +131,11 @@ void listaNodes(){
   set<pair<string, pair<string, int> > > lista;
   for(auto i : adjList){
     for(auto j : i.S){
-      // if(vis2[i.F] or vis2[j.S]) continue;
+
       string aa = i.F, bb = j.S;
       if(aa > bb) swap(aa, bb);
       lista.insert({aa, {bb, j.F}});
-      // cout << i.F << " " << j.S << endl;
-      // cout << "Distancia: " << j.F << endl;
-      // vis2[i.F] = 1, vis2[j.S] = 1;
+
     }
   }
   for(auto i : lista){
@@ -185,6 +156,15 @@ void dijkstra(){
   }
   int op;
   cin >> op;
+
+  if(cin.fail()){
+      cout << "Tente novamente!" << endl;
+      cin.clear();
+      cin.ignore(INT_MAX, '\n');
+      system("CLS");
+      return ;
+  }
+
   if(op < 0 or op >= sz(aux)){
     cout << "Selecione uma opcao valida!" << endl;
     return ;
@@ -260,7 +240,7 @@ void kruskal(){
   cout << "Kruskal rodado com sucesso!" << endl;
   cout << "Soma total das arestas: " << sum << endl;
   cout << "Arestas da MST: " << endl;
-  for(int i=0;i<sz(mst);i++) cout << mst[i].S.S << " " << mst[i].S.F << " : " << mst[i].F << endl;
+  for(int i=0;i<sz(mst);i++) cout << mst[i].S.S << " - " << mst[i].S.F << " : " << mst[i].F << endl;
 }
 
 int main(){ 
@@ -275,6 +255,14 @@ int main(){
     cout << "0 - Sair" << endl;
 
     cin >> op;
+
+    if(cin.fail()){
+      cout << "Tente novamente!" << endl;
+      cin.clear();
+      cin.ignore(INT_MAX, '\n');
+      continue;
+    }
+
     try{
       if(op == 1){
         addNode();
