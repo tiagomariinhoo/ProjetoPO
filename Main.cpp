@@ -32,13 +32,14 @@ int ddy[] = {1, 1};
 #define MAXL 20
 
 map<string, vector< pair<double, string> > > adjList;
-set<string> vis;
-map<string, int> dis;
+set<string> nodes;
+map<string, double> dis;
 
 void addNode(){
 
   system("CLS");
-  if(vis.size() == 0){
+  cout << "Opcao escolhida: 1" << endl;
+  if(nodes.size() == 0){
     string a, b;
     double dist;
     cout << "Ainda nao tem nodes disponiveis!" << endl;
@@ -61,13 +62,13 @@ void addNode(){
 
     adjList[a].pb({dist, b});
     adjList[b].pb({dist, a});
-    vis.insert(a), vis.insert(b);
+    nodes.insert(a), nodes.insert(b);
     cout << "Aresta adicionada com sucesso!" << endl;
 
   } else {
     cout << "Lista de Nodes: " << endl;
     vector<string> aux;
-    for(auto i : vis) cout << i << endl, aux.pb(i);
+    for(auto i : nodes) cout << i << endl, aux.pb(i);
 
     cout << "Adicione um caminho entre dois nodes!" << endl;
 
@@ -94,7 +95,7 @@ void addNode(){
       // continue;
     }
       
-      vis.insert(a), vis.insert(b);
+      nodes.insert(a), nodes.insert(b);
       bool at = false;
       for(int i=0;i<sz(adjList[a]);i++){
 
@@ -126,9 +127,10 @@ void addNode(){
 
 }
 
-void listaNodes(){  
+void listaArestas(){  
+  cout << "Opcao escolhida: 2" << endl;
   map<string, int> vis2;
-  set<pair<string, pair<string, int> > > lista;
+  set<pair<string, pair<string, double> > > lista;
   for(auto i : adjList){
     for(auto j : i.S){
 
@@ -144,16 +146,18 @@ void listaNodes(){
 }
 
 void dijkstra(){
-  priority_queue< pair<int, string>, vector< pair<int, string> >, greater<pair<int,string>>> pq;
+  cout << "Opcao escolhida: 3" << endl;
+  priority_queue< pair<double, string>, vector< pair<double, string> >, greater<pair<double,string>>> pq;
 
   string root;
   cout << "Escolha o node raiz: ";
   bool at = false;
   vector<string> aux;
-  for(auto i : vis) aux.pb(i);
+  for(auto i : nodes) aux.pb(i);
   for(int i=0;i<sz(aux);i++){
     cout << i << " - " << aux[i] << endl;
   }
+
   int op;
   cin >> op;
 
@@ -170,7 +174,7 @@ void dijkstra(){
     return ;
   }
 
-  for(auto i : vis) dis[i] = 191919190;
+  for(auto i : nodes) dis[i] = 1e8;
   dis[aux[op]] = 0;
   pq.push({0, aux[op]});
 
@@ -185,8 +189,8 @@ void dijkstra(){
     }
   }
 
-  cout << "Dijkstra terminado, menor caminho de " << root << " para os outros nodes:" << endl;
-  for(auto i : vis){
+  cout << "Dijkstra terminado, menor caminho de " << aux[op] << " para os outros nodes:" << endl;
+  for(auto i : nodes){
     if(i == root) continue;
     cout << i << " : " << dis[i] << endl;
   }
@@ -216,9 +220,10 @@ void junta(string a, string b){
 }
 
 void kruskal(){
+  cout << "Opcao escolhida: 4" << endl;
   vector<pair<int, pair<string, string>>> aux, mst;
 
-  for(auto i : vis){
+  for(auto i : nodes){
     pai[i] = i;
     for(auto j : adjList[i]){
       aux.pb({j.F,{i, j.S}});
@@ -227,7 +232,7 @@ void kruskal(){
 
   sort(aux.begin(), aux.end());
 
-  int sum = 0;
+  double sum = 0;
   for(int i=0;i<sz(aux);i++){
     string x = aux[i].S.F, y = aux[i].S.S;
     if(proc(x) != proc(y)){
@@ -247,13 +252,14 @@ int main(){
 
   while(1){
     int op;
+    cout << " ---- " << endl; 
     cout << "Escolha uma opcao!" << endl;
     cout << "1 - Adicionar Node" << endl;
-    cout << "2 - Listar Nodes" << endl;
+    cout << "2 - Listar arestas" << endl;
     cout << "3 - Rodar Dijkstra" << endl;
     cout << "4 - Rodar Kruskal" << endl;
     cout << "0 - Sair" << endl;
-
+    cout << " ---- " << endl;
     cin >> op;
 
     if(cin.fail()){
@@ -267,7 +273,7 @@ int main(){
       if(op == 1){
         addNode();
       } else if(op == 2){
-        listaNodes();
+        listaArestas();
       } else if(op == 3){
         dijkstra();
       } else if(op == 4){
