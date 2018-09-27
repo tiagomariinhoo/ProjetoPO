@@ -221,7 +221,7 @@ void junta(string a, string b){
 
 void kruskal(){
   cout << "Opcao escolhida: 4" << endl;
-  vector<pair<int, pair<string, string>>> aux, mst;
+  vector<pair<double, pair<string, string>>> aux, mst;
 
   for(auto i : nodes){
     pai[i] = i;
